@@ -1,42 +1,54 @@
 import elementCreator from '../../common/elementCreator';
 import dataRu from '../../common/lang/ru';
+import dataEn from '../../common/lang/en';
+import createButton, {btnMouseUpHandler} from '../button/button';
 import output, { outputStore } from '../output/output';
 import './styles.scss';
 
+export const langStore = {
+  toggleLang() {
+    this.lang = this.lang === dataRu ? dataEn : dataRu
+  },
+
+  getLangData() {
+    return this.lang;
+  },
+
+  setLang(lang) {
+    this.lang = lang;
+  }
+}
+
 const board = elementCreator('div', null, 'board');
 
-function btnMouseUpHandler(code, key) {
-  outputStore.addValue(key);
-  output.textContent = outputStore.getValue();
+langStore.setLang(dataRu);
+let buttons = Object.entries(langStore.getLangData()).map(([code, key]) => {
+  return createButton(key,  code, board)
+});
+
+const changeLang = () => {
+langStore.toggleLang();
+board.innerHTML = '';
+buttons = Object.entries(langStore.getLangData()).map(([code, key]) => {
+  return createButton(key,  code, board)
+});
+
 }
-const bigButtons = ['Space'];
-
-const buttons = Object.entries(dataRu).map(([code, key]) => {
-  const el = elementCreator('button', board, bigButtons.includes(code) ? 'bigButton' : 'button', key);
-  el.setAttribute('currentKey', key);
-  el.setAttribute('currentCode', code);
-  return el;
-});
-
-buttons.forEach((btn) => {
-  btn.addEventListener('mousedown', () => {
-    btn.classList.add('active');
-  });
-  btn.addEventListener('mouseup', () => {
-    btnMouseUpHandler(btn.getAttribute('currentCode'), btn.getAttribute('currentKey'));
-    btn.classList.remove('active');
-  });
-});
 
 document.addEventListener('keydown', (e) => {
-  const lightBtn = buttons.find((btn) => btn.getAttribute('currentCode') === e.code);
+  const lightBtn = buttons.find((btn) => btn.getAttribute('currentcode') === e.code);
   lightBtn.classList.add('active');
 });
 
 document.addEventListener('keyup', (e) => {
-  const lightBtn = buttons.find((btn) => btn.getAttribute('currentCode') === e.code);
+  const lightBtn = buttons.find((btn) => btn.getAttribute('currentcode') === e.code);
   lightBtn.classList.remove('active');
   btnMouseUpHandler(e.code, e.key);
+  if(e.ctrlKey + e.shiftKey) {
+    changeLang();
+  }
 });
+
+
 
 export default board;
