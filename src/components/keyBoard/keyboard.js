@@ -4,6 +4,7 @@ import output from '../output/output';
 import './styles.scss';
 
 const keyboard = elementCreator('div', null, 'keyboard');
-keyboard.append(output, board);
+const langElement = elementCreator('div', null, 'lang', 'change language: left ctrl+shift')
+keyboard.append(output, langElement, board);
 
 export default keyboard;
