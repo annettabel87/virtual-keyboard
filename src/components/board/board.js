@@ -7,7 +7,9 @@ import './styles.scss';
 
 export const langStore = {
   toggleLang() {
-    this.lang = this.lang === dataRu ? dataEn : dataRu
+    this.lang = this.lang === dataRu ? dataEn : dataRu;
+    localStorage.setItem('lang', JSON.stringify(this.lang))
+
   },
 
   getLangData() {
@@ -15,13 +17,19 @@ export const langStore = {
   },
 
   setLang(lang) {
+    localStorage.setItem('lang', JSON.stringify(lang))
     this.lang = lang;
   }
 }
 
 const board = elementCreator('div', null, 'board');
+if(!localStorage.getItem('lang')) {
+  langStore.setLang(dataRu);
+} else {
+  langStore.setLang(JSON.parse(localStorage.getItem('lang')));
 
-langStore.setLang(dataRu);
+}
+
 let buttons = Object.entries(langStore.getLangData()).map(([code, key]) => {
   return createButton(key,  code, board)
 });
