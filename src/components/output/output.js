@@ -5,9 +5,11 @@ const output = elementCreator('textarea', null, 'output');
 
 export const outputStore = {
   value: '',
+  capsLock: false,
+  
 
   addValue(value) {
-    this.value += value;
+    this.value += this.capsLock ? value.toUpperCase() : value;
   },
 
   getValue() {
@@ -15,8 +17,14 @@ export const outputStore = {
   },
 
   removeLastChar() {
-    this.value = this.value.slice(0, this.value.length);
+    this.value = this.value.slice(0, -1);
   },
+
+  toggleCapsLock() {
+    this.capsLock = !this.capsLock;
+  },
+
+  
 };
 
 export default output;

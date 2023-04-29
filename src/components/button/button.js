@@ -3,10 +3,14 @@ import elementCreator from '../../common/elementCreator';
 import './styles.scss';
 
 const bigButtons = ['Space'];
+const noCharCode = ['Shift', 'Tab', 'CapsLock', 'Backspace', 'Enter', 'ShiftLeft', 'ControlLeft',
+    'AltLeft', 'AltRight', 'ControlRight'];
 
 export function btnMouseUpHandler(code, key) {
-    outputStore.addValue(key);
-    output.textContent = outputStore.getValue();
+    if (!noCharCode.includes(code)) {
+        outputStore.addValue(key);
+        output.textContent = outputStore.getValue();
+    }
 }
 
 const createButton = (key, code, parent) => {
@@ -18,13 +22,20 @@ const createButton = (key, code, parent) => {
         btn.classList.add('active');
     })
 
-
     btn.addEventListener('mouseup', () => {
         btnMouseUpHandler(btn.getAttribute('currentCode'), btn.getAttribute('currentKey'));
         btn.classList.remove('active');
+        console.log(btn.code);
+        if (btn.getAttribute('currentCode') === 'Backspace') {
+            outputStore.removeLastChar();
+            output.textContent = outputStore.getValue();
+          }
+          if (btn.getAttribute('currentCode') === 'CapsLock') {
+            outputStore.toggleCapsLock();
+          }
     });
 
     return btn;
 }
-    
-    export default  createButton;
+
+export default createButton;

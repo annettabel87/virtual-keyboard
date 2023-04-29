@@ -1,59 +1,91 @@
 import elementCreator from '../../common/elementCreator';
-import dataRu from '../../common/lang/ru';
-import dataEn from '../../common/lang/en';
-import createButton, {btnMouseUpHandler} from '../button/button';
+import {dataRu, dataRuShift} from '../../common/lang/ru';
+import {dataEn, dataEnShift} from '../../common/lang/en';
+import createButton, { btnMouseUpHandler } from '../button/button';
 import output, { outputStore } from '../output/output';
 import './styles.scss';
 
-export const langStore = {
-  toggleLang() {
-    this.lang = this.lang === dataRu ? dataEn : dataRu;
-    localStorage.setItem('lang', JSON.stringify(this.lang))
+export const dataStore = {
+  shift: false,
 
+  toggleDataLang() {
+    this.data = this.data === dataRu ? dataEn : dataRu;
+    localStorage.setItem('lang', JSON.stringify(this.data));
   },
 
-  getLangData() {
-    return this.lang;
+  toggleDatShift() {
+    this.data = this.data === dataRu ?
+     this.shift ? dataRuShift : dataRu : this.shift ? dataEnShift : dataEn;
+    localStorage.setItem('lang', JSON.stringify(this.data));
   },
 
-  setLang(lang) {
-    localStorage.setItem('lang', JSON.stringify(lang))
-    this.lang = lang;
+  getData() {
+    return this.data;
+  },
+
+  setData(data) {
+    localStorage.setItem('lang', JSON.stringify(data))
+    this.data = data;
+  },
+
+  toggleShift() {
+    this.shift = !this.shift;
   }
 }
 
 const board = elementCreator('div', null, 'board');
-if(!localStorage.getItem('lang')) {
-  langStore.setLang(dataRu);
+if (!localStorage.getItem('lang')) {
+  dataStore.setData(dataRu);
 } else {
-  langStore.setLang(JSON.parse(localStorage.getItem('lang')));
+  dataStore.setData(JSON.parse(localStorage.getItem('lang')));
 
 }
 
-let buttons = Object.entries(langStore.getLangData()).map(([code, key]) => {
-  return createButton(key,  code, board)
+let buttons = Object.entries(dataStore.getData()).map(([code, key]) => {
+  return createButton(key, code, board)
 });
 
 const changeLang = () => {
-langStore.toggleLang();
-board.innerHTML = '';
-buttons = Object.entries(langStore.getLangData()).map(([code, key]) => {
-  return createButton(key,  code, board)
-});
+  dataStore.toggleDataLang();
+  board.innerHTML = '';
+  buttons = Object.entries(dataStore.getData()).map(([code, key]) => {
+    return createButton(key, code, board)
+  });
+}
 
+const changeShift = () => {
+  dataStore.toggleShift();
+  dataStore.toggleDatShift();
+  board.innerHTML = '';
+  buttons = Object.entries(dataStore.getData()).map(([code, key]) => {
+    return createButton(key, code, board)
+  });
 }
 
 document.addEventListener('keydown', (e) => {
   const lightBtn = buttons.find((btn) => btn.getAttribute('currentcode') === e.code);
   lightBtn.classList.add('active');
+  if (e.code === 'ShiftLeft') {
+    changeShift();
+  }
 });
 
 document.addEventListener('keyup', (e) => {
   const lightBtn = buttons.find((btn) => btn.getAttribute('currentcode') === e.code);
   lightBtn.classList.remove('active');
   btnMouseUpHandler(e.code, e.key);
-  if(e.ctrlKey + e.shiftKey) {
+  if (e.ctrlKey + e.shiftKey) {
     changeLang();
+  }
+  if (e.code === 'Backspace') {
+    outputStore.removeLastChar();
+    output.textContent = outputStore.getValue();
+  }
+  if (e.code === 'CapsLock') {
+    outputStore.toggleCapsLock();
+  }
+  if (e.code === 'ShiftLeft') {
+    changeShift();
   }
 });
 
