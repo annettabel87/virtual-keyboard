@@ -11,6 +11,16 @@ export function btnMouseUpHandler(code, key) {
         outputStore.addValue(key);
         output.textContent = outputStore.getValue();
     }
+
+    if(code === 'Tab'){
+        outputStore.addValue(' ');
+        output.textContent = outputStore.getValue();
+    }
+
+    if(code === 'Enter'){
+        outputStore.addValue('\n');
+        output.textContent = outputStore.getValue();
+    }
 }
 
 const createButton = (key, code, parent) => {
@@ -25,7 +35,6 @@ const createButton = (key, code, parent) => {
     btn.addEventListener('mouseup', () => {
         btnMouseUpHandler(btn.getAttribute('currentCode'), btn.getAttribute('currentKey'));
         btn.classList.remove('active');
-        console.log(btn.code);
         if (btn.getAttribute('currentCode') === 'Backspace') {
             outputStore.removeLastChar();
             output.textContent = outputStore.getValue();

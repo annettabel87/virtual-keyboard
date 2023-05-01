@@ -1,6 +1,6 @@
 import elementCreator from '../../common/elementCreator';
-import {dataRu, dataRuShift} from '../../common/lang/ru';
-import {dataEn, dataEnShift} from '../../common/lang/en';
+import { dataRu, dataRuShift } from '../../common/lang/ru';
+import { dataEn, dataEnShift } from '../../common/lang/en';
 import createButton, { btnMouseUpHandler } from '../button/button';
 import output, { outputStore } from '../output/output';
 import './styles.scss';
@@ -15,7 +15,7 @@ export const dataStore = {
 
   toggleDatShift() {
     this.data = this.data === dataRu ?
-     this.shift ? dataRuShift : dataRu : this.shift ? dataEnShift : dataEn;
+      this.shift ? dataRuShift : dataRu : this.shift ? dataEnShift : dataEn;
     localStorage.setItem('lang', JSON.stringify(this.data));
   },
 
@@ -34,11 +34,11 @@ export const dataStore = {
 }
 
 const board = elementCreator('div', null, 'board');
+
 if (!localStorage.getItem('lang')) {
   dataStore.setData(dataRu);
 } else {
   dataStore.setData(JSON.parse(localStorage.getItem('lang')));
-
 }
 
 let buttons = Object.entries(dataStore.getData()).map(([code, key]) => {
@@ -73,22 +73,29 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('keyup', (e) => {
   const lightBtn = buttons.find((btn) => btn.getAttribute('currentcode') === e.code);
   lightBtn.classList.remove('active');
-  btnMouseUpHandler(e.code, e.key);
+  btnMouseUpHandler(e.code, lightBtn.getAttribute('currentkey'));
+
   if (e.ctrlKey + e.shiftKey) {
     changeLang();
   }
+
   if (e.code === 'Backspace') {
     outputStore.removeLastChar();
     output.textContent = outputStore.getValue();
   }
+
   if (e.code === 'CapsLock') {
     outputStore.toggleCapsLock();
   }
+
   if (e.code === 'ShiftLeft') {
     changeShift();
   }
+
+  if (e.code === 'Tab') {
+    outputStore.addValue(' ');
+    output.textContent = outputStore.getValue();
+  }
 });
-
-
 
 export default board;

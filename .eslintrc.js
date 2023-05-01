@@ -11,6 +11,10 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'linebreak-style':  'unix' ,
+    'linebreak-style': 'unix',
+    'import/prefer-default-export': 'off',
+    'import/extensions': 'off',
+    indent: 'off',
+    'eol-last': ['error', 'never'],
   },
 };
