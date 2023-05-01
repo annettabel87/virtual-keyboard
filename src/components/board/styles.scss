@@ -1,0 +1,9 @@
+.board {
+    max-width: 1000px;
+    padding: 15px;
+    background: #5d6c9b;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 6px;
+}
